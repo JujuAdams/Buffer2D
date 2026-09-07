@@ -1,5 +1,4 @@
 bufferA = new BufferGridFloat32(3, 3);
-bufferA.Fill(1);
 
 var _index = 1;
 var _yCell = 0;

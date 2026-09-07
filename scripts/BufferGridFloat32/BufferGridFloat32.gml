@@ -39,6 +39,79 @@ function BufferGridFloat32(_width, _height) constructor
         }
     }
     
+    static Add = function(_x, _y, _value)
+    {
+        if ((_x >= 0) && (_x < __width) && (_y >= 0) || (_y < __height))
+        {
+            var _index = __BUFFERGRID_F32_SIZE*(_x + __width*_y);
+            buffer_poke(__buffer, _index, buffer_f32, buffer_peek(__buffer, _index, buffer_f32) + _value);
+        }
+        
+        return self;
+    }
+    
+    static SetRegion = function(_left, _top, _width, _height, _value)
+    {
+        var _gridWidth  = __width;
+        var _gridHeight = __height;
+        var _buffer     = __buffer;
+        
+        var _right  = _left + _width-1;
+        var _bottom = _top + _height-1;
+        
+        if ((_left < _gridWidth) && (_top < _gridHeight) && (_right >= 0) && (_bottom >= 0))
+        {
+            _right  = clamp(_left + _width-1, 0, _gridWidth-1);
+            _bottom = clamp(_top + _height-1, 0, _gridHeight-1);
+            _left   = clamp(_left, 0, _gridWidth);
+            _top    = clamp(_top,  0, _gridHeight);
+            
+            var _size = __BUFFERGRID_F32_SIZE*(1 + _right - _left);
+            var _index = __BUFFERGRID_F32_SIZE*(_left + _gridWidth*_top);
+            repeat(1 + _bottom - _top)
+            {
+                buffer_fill(_buffer, _index, buffer_f32, _value, _size);
+                _index += __BUFFERGRID_F32_SIZE*_gridWidth;
+            }
+        }
+        
+        return self;
+    }
+    
+    static AddRegion = function(_left, _top, _width, _height, _value)
+    {
+        var _gridWidth  = __width;
+        var _gridHeight = __height;
+        var _buffer     = __buffer;
+        
+        var _right  = _left + _width-1;
+        var _bottom = _top + _height-1;
+        
+        if ((_left < _gridWidth) && (_top < _gridHeight) && (_right >= 0) && (_bottom >= 0))
+        {
+            _right  = clamp(_left + _width-1, 0, _gridWidth-1);
+            _bottom = clamp(_top + _height-1, 0, _gridHeight-1);
+            _left   = clamp(_left, 0, _gridWidth);
+            _top    = clamp(_top,  0, _gridHeight);
+            
+            var _regionWidth = 1 + _right - _left;
+            var _y = _top;
+            repeat(1 + _bottom - _top)
+            {
+                var _index = __BUFFERGRID_F32_SIZE*(_left + _gridWidth*_y);
+                repeat(_regionWidth)
+                {
+                    buffer_poke(_buffer, _index, buffer_f32, buffer_peek(_buffer, _index, buffer_f32) + _value);
+                    _index += __BUFFERGRID_F32_SIZE;
+                }
+                
+                ++_y;
+            }
+        }
+        
+        return self;
+    }
+    
     static Duplicate = function()
     {
         var _new = new BufferGridF32(__width, __height);
