@@ -1,12 +1,12 @@
 {
   "$GMScript":"v1",
-  "%Name":"Buffer2D_f32",
+  "%Name":"BufferGridDeserialize",
   "isCompatibility":false,
   "isDnD":false,
-  "name":"Buffer2D_f32",
+  "name":"BufferGridDeserialize",
   "parent":{
-    "name":"Buffer2D",
-    "path":"Buffer2D.yyp",
+    "name":"BufferGrid",
+    "path":"folders/BufferGrid.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

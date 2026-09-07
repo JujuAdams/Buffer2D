@@ -1,14 +1,18 @@
-#macro __BUFFER2D_F32_SIZE  4
+/// @param width
+/// @param height
 
-function Buffer2D_f32(_width, _height) constructor
+#macro __BUFFERGRID_F32_SIZE  4
+
+function BufferGridFloat32(_width, _height) constructor
 {
-    __width  = max(0, _width);
-    __height = max(0, _height);
-    __buffer = buffer_create(__BUFFER2D_F32_SIZE*_width*_height, buffer_fixed, __BUFFER2D_F32_SIZE);
+    __width  = clamp(_width,  0, 0xFFFF_FFFF);
+    __height = clamp(_height, 0, 0xFFFF_FFFF);
+    __size   = __BUFFERGRID_F32_SIZE*__width*__height;
+    __buffer = buffer_create(__size, buffer_fixed, __BUFFERGRID_F32_SIZE);
     
     static Fill =  function(_value)
     {
-        buffer_fill(__buffer, 0, buffer_f32, _value, __BUFFER2D_F32_SIZE*__width*__height);
+        buffer_fill(__buffer, 0, buffer_f32, _value, __size);
         
         return self;
     }
@@ -17,7 +21,7 @@ function Buffer2D_f32(_width, _height) constructor
     {
         if ((_x >= 0) && (_x < __width) && (_y >= 0) || (_y < __height))
         {
-            buffer_poke(__buffer, __BUFFER2D_F32_SIZE*(_x + __width*_y), buffer_f32, _value);
+            buffer_poke(__buffer, __BUFFERGRID_F32_SIZE*(_x + __width*_y), buffer_f32, _value);
         }
         
         return self;
@@ -27,7 +31,7 @@ function Buffer2D_f32(_width, _height) constructor
     {
         if ((_x >= 0) && (_x < __width) && (_y >= 0) || (_y < __height))
         {
-            return buffer_peek(__buffer, __BUFFER2D_F32_SIZE*(_x + __width*_y), buffer_f32);
+            return buffer_peek(__buffer, __BUFFERGRID_F32_SIZE*(_x + __width*_y), buffer_f32);
         }
         else
         {
@@ -37,17 +41,17 @@ function Buffer2D_f32(_width, _height) constructor
     
     static Duplicate = function()
     {
-        var _new = new Buffer2D_f32(__width, __height);
-        buffer_copy(__buffer, 0, __BUFFER2D_F32_SIZE*__width*__height, _new.__buffer, 0);
+        var _new = new BufferGridF32(__width, __height);
+        buffer_copy(__buffer, 0, __size, _new.__buffer, 0);
         return _new;
     }
     
-    static CopyPartTo = function(_srcLeft, _srcTop, _copyWidth, _copyHeight, _destBuffer2d, _dstLeft, _dstTop)
+    static CopyPartTo = function(_srcLeft, _srcTop, _copyWidth, _copyHeight, _destBufferGrid, _dstLeft, _dstTop)
     {
         var _srcWidth  = __width;
         var _srcHeight = __height;
-        var _dstWidth  = _destBuffer2d.__width;
-        var _dstHeight = _destBuffer2d.__height;
+        var _dstWidth  = _destBufferGrid.__width;
+        var _dstHeight = _destBufferGrid.__height;
         
         if ((_srcLeft >= _srcWidth) || (_srcLeft >= _srcHeight) || (_dstLeft >= _dstWidth) || (_dstTop >= _dstHeight))
         {
@@ -82,8 +86,8 @@ function Buffer2D_f32(_width, _height) constructor
         if ((_copyWidth > 0) && (_copyHeight > 0))
         {
             
-            buffer_copy_stride(__buffer,               __BUFFER2D_F32_SIZE*(_srcLeft + _srcWidth*_srcTop), __BUFFER2D_F32_SIZE*_copyWidth, __BUFFER2D_F32_SIZE*_srcWidth, _copyHeight,
-                               _destBuffer2d.__buffer, __BUFFER2D_F32_SIZE*(_dstLeft + _dstWidth*_dstTop), __BUFFER2D_F32_SIZE*_dstWidth);
+            buffer_copy_stride(__buffer,               __BUFFERGRID_F32_SIZE*(_srcLeft + _srcWidth*_srcTop), __BUFFERGRID_F32_SIZE*_copyWidth, __BUFFERGRID_F32_SIZE*_srcWidth, _copyHeight,
+                               _destBufferGrid.__buffer, __BUFFERGRID_F32_SIZE*(_dstLeft + _dstWidth*_dstTop), __BUFFERGRID_F32_SIZE*_dstWidth);
         }
         
         return self;
@@ -91,8 +95,8 @@ function Buffer2D_f32(_width, _height) constructor
     
     static Resize = function(_newWidth, _newHeight, _hAlign = fa_left, _vAlign = fa_top)
     {
-        _newWidth  = max(0, _newWidth);
-        _newHeight = max(0, _newHeight);
+        _newWidth  = clamp(_newWidth,  0, 0xFFFF_FFFF);
+        _newHeight = clamp(_newHeight, 0, 0xFFFF_FFFF);
         
         var _oldWidth  = __width;
         var _oldHeight = __height;
@@ -100,7 +104,7 @@ function Buffer2D_f32(_width, _height) constructor
         if ((_oldWidth == _newWidth) && (_oldHeight == _newHeight)) return;
         
         var _old = __buffer;
-        var _new = buffer_create(__BUFFER2D_F32_SIZE*_newWidth*_newHeight, buffer_fixed, __BUFFER2D_F32_SIZE);
+        var _new = buffer_create(__BUFFERGRID_F32_SIZE*_newWidth*_newHeight, buffer_fixed, __BUFFERGRID_F32_SIZE);
         
         if ((_newWidth > 0) && (_newHeight > 0))
         {
@@ -158,13 +162,14 @@ function Buffer2D_f32(_width, _height) constructor
                 }
             }
             
-            buffer_copy_stride(_old, __BUFFER2D_F32_SIZE*(_srcX + _oldWidth*_srcY), __BUFFER2D_F32_SIZE*_copyWidth, __BUFFER2D_F32_SIZE*_oldWidth, _copyHeight,
-                               _new, __BUFFER2D_F32_SIZE*(_dstX + _newWidth*_dstY), __BUFFER2D_F32_SIZE*_newWidth);
+            buffer_copy_stride(_old, __BUFFERGRID_F32_SIZE*(_srcX + _oldWidth*_srcY), __BUFFERGRID_F32_SIZE*_copyWidth, __BUFFERGRID_F32_SIZE*_oldWidth, _copyHeight,
+                               _new, __BUFFERGRID_F32_SIZE*(_dstX + _newWidth*_dstY), __BUFFERGRID_F32_SIZE*_newWidth);
         }
         
         buffer_delete(_old);
         __width  = _newWidth;
         __height = _newHeight;
+        __size   = __BUFFERGRID_F32_SIZE*_newWidth*_newHeight;
         __buffer = _new;
         
         return self;
@@ -178,7 +183,7 @@ function Buffer2D_f32(_width, _height) constructor
         var _height = __height;
         
         var _old = __buffer;
-        var _new = buffer_create(__BUFFER2D_F32_SIZE*_width*_height, buffer_fixed, __BUFFER2D_F32_SIZE);
+        var _new = buffer_create(__BUFFERGRID_F32_SIZE*_width*_height, buffer_fixed, __BUFFERGRID_F32_SIZE);
         
         var _copyWidth  = _width - abs(_dX);
         var _copyHeight = _height - abs(_dY);
@@ -192,12 +197,31 @@ function Buffer2D_f32(_width, _height) constructor
             if (_dX < 0) { _srcX = -_dX; } else { _dstX = _dX; }
             if (_dY < 0) { _srcY = -_dY; } else { _dstY = _dY; }
             
-            buffer_copy_stride(_old, __BUFFER2D_F32_SIZE*(_srcX + _width*_srcY), __BUFFER2D_F32_SIZE*_copyWidth, __BUFFER2D_F32_SIZE*_width, _copyHeight,
-                               _new, __BUFFER2D_F32_SIZE*(_dstX + _width*_dstY), __BUFFER2D_F32_SIZE*_width);
+            buffer_copy_stride(_old, __BUFFERGRID_F32_SIZE*(_srcX + _width*_srcY), __BUFFERGRID_F32_SIZE*_copyWidth, __BUFFERGRID_F32_SIZE*_width, _copyHeight,
+                               _new, __BUFFERGRID_F32_SIZE*(_dstX + _width*_dstY), __BUFFERGRID_F32_SIZE*_width);
         }
         
         buffer_delete(_old);
         __buffer = _new;
+        
+        return self;
+    }
+    
+    static Serialize = function(_buffer)
+    {
+        buffer_write(_buffer, buffer_u8, 0x01);
+        buffer_write(_buffer, buffer_u32, __width);
+        buffer_write(_buffer, buffer_u32, __height);
+        buffer_copy(__buffer, 0, __size, _buffer, buffer_tell(_buffer));
+        buffer_seek(_buffer, buffer_seek_relative, __size);
+        
+        return self;
+    }
+    
+    static __Deserialize = function(_buffer)
+    {
+        buffer_copy(_buffer, buffer_tell(_buffer), __size, __buffer, 0);
+        buffer_seek(_buffer, buffer_seek_relative, __size);
         
         return self;
     }

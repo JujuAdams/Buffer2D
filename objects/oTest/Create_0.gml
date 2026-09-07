@@ -1,4 +1,4 @@
-bufferA = new Buffer2D_f32(3, 3);
+bufferA = new BufferGridFloat32(3, 3);
 bufferA.Fill(1);
 
 var _index = 1;
@@ -16,5 +16,10 @@ repeat(bufferA.GetHeight())
     ++_yCell;
 }
 
-bufferB = new Buffer2D_f32(bufferA.GetWidth(), bufferA.GetHeight());
+bufferB = new BufferGridFloat32(bufferA.GetWidth(), bufferA.GetHeight());
 bufferA.CopyPartTo(-1, -1, 3, 2,   bufferB, 0, -1);
+
+saveBuffer = buffer_create(1024, buffer_grow, 1);
+bufferB.Serialize(saveBuffer);
+buffer_seek(saveBuffer, buffer_seek_start, 0);
+bufferC = BufferGridDeserialize(saveBuffer);

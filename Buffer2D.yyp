@@ -9,7 +9,9 @@
     "name":"Default",
   },
   "defaultScriptType":1,
-  "Folders":[],
+  "Folders":[
+    {"$GMFolder":"","%Name":"BufferGrid","folderPath":"folders/BufferGrid.yy","name":"BufferGrid","resourceType":"GMFolder","resourceVersion":"2.0",},
+  ],
   "ForcedPrefabProjectReferences":[],
   "IncludedFiles":[],
   "isEcma":false,
@@ -21,7 +23,8 @@
   "resources":[
     {"id":{"name":"oTest","path":"objects/oTest/oTest.yy",},},
     {"id":{"name":"rMain","path":"rooms/rMain/rMain.yy",},},
-    {"id":{"name":"Buffer2D_f32","path":"scripts/Buffer2D_f32/Buffer2D_f32.yy",},},
+    {"id":{"name":"BufferGridDeserialize","path":"scripts/BufferGridDeserialize/BufferGridDeserialize.yy",},},
+    {"id":{"name":"BufferGridFloat32","path":"scripts/BufferGridFloat32/BufferGridFloat32.yy",},},
   ],
   "resourceType":"GMProject",
   "resourceVersion":"2.0",
