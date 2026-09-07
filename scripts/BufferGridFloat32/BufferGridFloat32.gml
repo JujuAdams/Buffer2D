@@ -39,6 +39,29 @@ function BufferGridFloat32(_width, _height) constructor
         }
     }
     
+    static GetInterpolated = function(_x, _y)
+    {
+        var _gridWidth = __width;
+        
+        if ((_x < 0) || (_x > _gridWidth-1) || (_y < 0) || (_y > __height-1))
+        {
+            return undefined;
+        }
+        
+        var _xFrac = frac(_x);
+        var _yFrac = frac(_y);
+        _x = floor(_x);
+        _y = floor(_y);
+        
+        var _buffer = __buffer;
+        var _value00 = buffer_peek(_buffer, __BUFFERGRID_F32_SIZE*(_x   + _gridWidth*_y    ), buffer_f32);
+        var _value10 = buffer_peek(_buffer, __BUFFERGRID_F32_SIZE*(_x+1 + _gridWidth*_y    ), buffer_f32);
+        var _value01 = buffer_peek(_buffer, __BUFFERGRID_F32_SIZE*(_x   + _gridWidth*(_y+1)), buffer_f32);
+        var _value11 = buffer_peek(_buffer, __BUFFERGRID_F32_SIZE*(_x+1 + _gridWidth*(_y+1)), buffer_f32);
+        
+        return lerp(lerp(_value00, _value10, _xFrac), lerp(_value01, _value11, _xFrac), _yFrac);
+    }
+    
     static Add = function(_x, _y, _value)
     {
         if ((_x >= 0) && (_x < __width) && (_y >= 0) || (_y < __height))
@@ -110,6 +133,17 @@ function BufferGridFloat32(_width, _height) constructor
         }
         
         return self;
+    }
+    
+    static Randomize = function(_min, _max)
+    {
+        var _buffer = __buffer;
+        
+        buffer_seek(_buffer, buffer_seek_start, 0);
+        repeat(__width*__height)
+        {
+            buffer_write(_buffer, buffer_f32, random_range(_min, _max));
+        }
     }
     
     static Duplicate = function()
