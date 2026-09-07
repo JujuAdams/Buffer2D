@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"Buffer2D_f32",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"Buffer2D_f32",
+  "parent":{
+    "name":"Buffer2D",
+    "path":"Buffer2D.yyp",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
