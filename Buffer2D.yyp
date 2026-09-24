@@ -24,6 +24,7 @@
     {"id":{"name":"oTestA","path":"objects/oTestA/oTestA.yy",},},
     {"id":{"name":"oTestB","path":"objects/oTestB/oTestB.yy",},},
     {"id":{"name":"rMain","path":"rooms/rMain/rMain.yy",},},
+    {"id":{"name":"__BufferGridError","path":"scripts/__BufferGridError/__BufferGridError.yy",},},
     {"id":{"name":"__BufferGridWrap","path":"scripts/__BufferGridWrap/__BufferGridWrap.yy",},},
     {"id":{"name":"BufferGridCreate","path":"scripts/BufferGridCreate/BufferGridCreate.yy",},},
     {"id":{"name":"BufferGridDeserialize","path":"scripts/BufferGridDeserialize/BufferGridDeserialize.yy",},},

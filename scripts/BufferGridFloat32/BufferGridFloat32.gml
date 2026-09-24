@@ -3,6 +3,8 @@
 
 function BufferGridFloat32(_width, _height) constructor
 {
+    static _datatypeSize = __BUFFERGRID_U32_SIZE;
+    
     __width  = clamp(_width,  0, 0xFFFF_FFFF);
     __height = clamp(_height, 0, 0xFFFF_FFFF);
     __size   = __BUFFERGRID_F32_SIZE*__width*__height;
@@ -199,12 +201,12 @@ function BufferGridFloat32(_width, _height) constructor
         return self;
     }
     
-    static CopyPartTo = function(_srcLeft, _srcTop, _copyWidth, _copyHeight, _destBufferGrid, _dstLeft, _dstTop)
+    static CopyPartTo = function(_srcLeft, _srcTop, _copyWidth, _copyHeight, _dstBufferGrid, _dstLeft, _dstTop)
     {
         var _srcWidth  = __width;
         var _srcHeight = __height;
-        var _dstWidth  = _destBufferGrid.__width;
-        var _dstHeight = _destBufferGrid.__height;
+        var _dstWidth  = _dstBufferGrid.__width;
+        var _dstHeight = _dstBufferGrid.__height;
         
         if ((_srcLeft >= _srcWidth) || (_srcLeft >= _srcHeight) || (_dstLeft >= _dstWidth) || (_dstTop >= _dstHeight))
         {
@@ -240,7 +242,7 @@ function BufferGridFloat32(_width, _height) constructor
         {
             
             buffer_copy_stride(__buffer,                 __BUFFERGRID_F32_SIZE*(_srcLeft + _srcWidth*_srcTop), __BUFFERGRID_F32_SIZE*_copyWidth, __BUFFERGRID_F32_SIZE*_srcWidth, _copyHeight,
-                               _destBufferGrid.__buffer, __BUFFERGRID_F32_SIZE*(_dstLeft + _dstWidth*_dstTop), __BUFFERGRID_F32_SIZE*_dstWidth);
+                               _dstBufferGrid.__buffer, __BUFFERGRID_F32_SIZE*(_dstLeft + _dstWidth*_dstTop), __BUFFERGRID_F32_SIZE*_dstWidth);
         }
         
         return self;

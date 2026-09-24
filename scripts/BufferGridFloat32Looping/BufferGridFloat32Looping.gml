@@ -3,6 +3,8 @@
 
 function BufferGridFloat32Looping(_width, _height) constructor
 {
+    static _datatypeSize = __BUFFERGRID_U32_SIZE;
+    
     __width  = clamp(_width,  0, 0xFFFF_FFFF);
     __height = clamp(_height, 0, 0xFFFF_FFFF);
     __size   = __BUFFERGRID_F32_SIZE*__width*__height;
@@ -22,13 +24,13 @@ function BufferGridFloat32Looping(_width, _height) constructor
     
     static Set = function(_x, _y, _value)
     {
-        buffer_poke(__buffer, __BUFFERGRID_F32_SIZE*(wrap(_x, __width) + __width*wrap(_y, __height)), buffer_f32, _value);
+        buffer_poke(__buffer, __BUFFERGRID_F32_SIZE*(__BufferGridWrap(_x, __width) + __width*__BufferGridWrap(_y, __height)), buffer_f32, _value);
         return self;
     }
     
     static Get = function(_x, _y)
     {
-        return buffer_peek(__buffer, __BUFFERGRID_F32_SIZE*(wrap(_x, __width) + __width*wrap(_y, __height)), buffer_f32);
+        return buffer_peek(__buffer, __BUFFERGRID_F32_SIZE*(__BufferGridWrap(_x, __width) + __width*__BufferGridWrap(_y, __height)), buffer_f32);
     }
     
     static GetInterpolated = function(_x, _y)
@@ -40,10 +42,10 @@ function BufferGridFloat32Looping(_width, _height) constructor
         _x = floor(_x);
         _y = floor(_y);
         
-        var _x0 = wrap(_x,   _gridWidth);
-        var _y0 = wrap(_y,   __height);
-        var _x1 = wrap(_x+1, _gridWidth);
-        var _y1 = wrap(_y+1, __height);
+        var _x0 = __BufferGridWrap(_x,   _gridWidth);
+        var _y0 = __BufferGridWrap(_y,   __height);
+        var _x1 = __BufferGridWrap(_x+1, _gridWidth);
+        var _y1 = __BufferGridWrap(_y+1, __height);
         
         var _buffer = __buffer;
         var _value00 = buffer_peek(_buffer, __BUFFERGRID_F32_SIZE*(_x0 + _gridWidth*_y0), buffer_f32);
@@ -56,7 +58,7 @@ function BufferGridFloat32Looping(_width, _height) constructor
     
     static Add = function(_x, _y, _value)
     {
-        var _index = __BUFFERGRID_F32_SIZE*(wrap(_x, __width) + __width*wrap(_y, __height));
+        var _index = __BUFFERGRID_F32_SIZE*(__BufferGridWrap(_x, __width) + __width*__BufferGridWrap(_y, __height));
         buffer_poke(__buffer, _index, buffer_f32, buffer_peek(__buffer, _index, buffer_f32) + _value);
         return self;
     }
@@ -194,7 +196,7 @@ function BufferGridFloat32Looping(_width, _height) constructor
         return self;
     }
     
-    static CopyPartTo = function(_srcLeft, _srcTop, _copyWidth, _copyHeight, _destBufferGrid, _dstLeft, _dstTop)
+    static CopyPartTo = function(_srcLeft, _srcTop, _copyWidth, _copyHeight, _dstBufferGrid, _dstLeft, _dstTop)
     {
         //TODO - Looping .CopyPartTo()
         sdm("TODO");
@@ -202,8 +204,8 @@ function BufferGridFloat32Looping(_width, _height) constructor
         
         var _srcWidth  = __width;
         var _srcHeight = __height;
-        var _dstWidth  = _destBufferGrid.__width;
-        var _dstHeight = _destBufferGrid.__height;
+        var _dstWidth  = _dstBufferGrid.__width;
+        var _dstHeight = _dstBufferGrid.__height;
         
         if ((_srcLeft >= _srcWidth) || (_srcLeft >= _srcHeight) || (_dstLeft >= _dstWidth) || (_dstTop >= _dstHeight))
         {
@@ -239,7 +241,7 @@ function BufferGridFloat32Looping(_width, _height) constructor
         {
             
             buffer_copy_stride(__buffer,               __BUFFERGRID_F32_SIZE*(_srcLeft + _srcWidth*_srcTop), __BUFFERGRID_F32_SIZE*_copyWidth, __BUFFERGRID_F32_SIZE*_srcWidth, _copyHeight,
-                               _destBufferGrid.__buffer, __BUFFERGRID_F32_SIZE*(_dstLeft + _dstWidth*_dstTop), __BUFFERGRID_F32_SIZE*_dstWidth);
+                               _dstBufferGrid.__buffer, __BUFFERGRID_F32_SIZE*(_dstLeft + _dstWidth*_dstTop), __BUFFERGRID_F32_SIZE*_dstWidth);
         }
         
         return self;
