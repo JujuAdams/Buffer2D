@@ -15,12 +15,19 @@ repeat(bufferGridA.GetHeight())
     ++_yCell;
 }
 
+
+
 bufferGridB = new BufferGridUint32Looping(bufferGridA.GetWidth(), bufferGridA.GetHeight());
 bufferGridA.CopyTo(bufferGridB);
 
-buffer = buffer_create(4*4*4, buffer_fixed, 4);
-buffer_fill(buffer, 0, buffer_u32, 99, 4*4*4);
+bufferGridB.AddRegion(0, -1, 2, 3,   10);
 
-bufferGridB.CopyBufferToPart(buffer, 0, 4, 4,   2, 2);
 
+//bufferGridA.CopyTo(bufferGridB);
+//
+//buffer = buffer_create(4*4*4, buffer_fixed, 4);
+//buffer_fill(buffer, 0, buffer_u32, 99, 4*4*4);
+//
+//bufferGridB.CopyBufferToPart(buffer, 0, 4, 4,   2, 2);
+//
 //bufferA.CopyPartTo(-1, -1, 3, 2,   bufferB, 0, -1);
