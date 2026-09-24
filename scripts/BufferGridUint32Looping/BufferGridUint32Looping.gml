@@ -65,30 +65,68 @@ function BufferGridUint32Looping(_width, _height) constructor
     
     static SetRegion = function(_left, _top, _width, _height, _value)
     {
-        //TODO - Looping .SetRegion()
-        sdm("TODO");
-        return self;
-        
-        var _gridWidth  = __width;
-        var _gridHeight = __height;
-        var _buffer     = __buffer;
-        
-        var _right  = _left + _width-1;
-        var _bottom = _top + _height-1;
-        
-        if ((_left < _gridWidth) && (_top < _gridHeight) && (_right >= 0) && (_bottom >= 0))
+        static _funcSet = function(_buffer, _gridWidth, _left, _top, _width, _height, _value)
         {
-            _right  = clamp(_left + _width-1, 0, _gridWidth-1);
-            _bottom = clamp(_top + _height-1, 0, _gridHeight-1);
-            _left   = clamp(_left, 0, _gridWidth);
-            _top    = clamp(_top,  0, _gridHeight);
-            
-            var _size = __BUFFERGRID_U32_SIZE*(1 + _right - _left);
+            var _size = __BUFFERGRID_U32_SIZE*_width;
             var _index = __BUFFERGRID_U32_SIZE*(_left + _gridWidth*_top);
-            repeat(1 + _bottom - _top)
+            repeat(_height)
             {
                 buffer_fill(_buffer, _index, buffer_u32, _value, _size);
                 _index += __BUFFERGRID_U32_SIZE*_gridWidth;
+            }
+        }
+        
+        var _dstBuffer = __buffer;
+        var _dstWidth  = __width;
+        var _dstHeight = __height;
+        
+        _left = __BufferGridWrap(_left, _dstWidth);
+        _top  = __BufferGridWrap(_top,  _dstHeight);
+        var _regionWidth  = min(_dstWidth,  _width);
+        var _regionHeight = min(_dstHeight, _height);
+        
+        if (_left + _regionWidth > _dstWidth)
+        {
+            if (_top + _regionHeight > _dstHeight)
+            {
+                //Wrap X + Y
+                
+                var _firstWidth  = _dstWidth  - _left;
+                var _firstHeight = _dstHeight - _top;
+                var _remainderX  = _regionWidth  - _firstWidth;
+                var _remainderY  = _regionHeight - _firstHeight;
+                
+                _funcSet(_dstBuffer, _dstWidth, _left, _top, _firstWidth, _firstHeight, _value);
+                _funcSet(_dstBuffer, _dstWidth,     0, _top, _remainderX, _firstHeight, _value);
+                _funcSet(_dstBuffer, _dstWidth, _left,    0, _firstWidth, _remainderY,  _value);
+                _funcSet(_dstBuffer, _dstWidth,     0,    0, _remainderX, _remainderY,  _value);
+            }
+            else
+            {
+                //Wrap X
+                
+                var _firstWidth = _dstWidth  - _left;
+                var _remainderX = _regionWidth  - _firstWidth;
+                
+                _funcSet(_dstBuffer, _dstWidth, _left, _top, _firstWidth, _regionHeight, _value);
+                _funcSet(_dstBuffer, _dstWidth,     0, _top, _remainderX, _regionHeight, _value);
+            }
+        }
+        else
+        {
+            if (_top + _regionHeight > _dstHeight)
+            {
+                //Wrap Y
+                var _firstHeight = _dstHeight - _top;
+                var _remainderY  = _regionHeight - _firstHeight;
+                
+                _funcSet(_dstBuffer, _dstWidth, _left, _top, _regionWidth, _firstHeight, _value);
+                _funcSet(_dstBuffer, _dstWidth, _left,    0, _regionWidth, _remainderY,  _value);
+            }
+            else
+            {
+                //No wrapping
+                _funcSet(_dstBuffer, _dstWidth, _left, _top, _regionWidth, _regionHeight, _value);
             }
         }
         
@@ -97,36 +135,73 @@ function BufferGridUint32Looping(_width, _height) constructor
     
     static AddRegion = function(_left, _top, _width, _height, _value)
     {
-        //TODO - Looping .AddRegion()
-        sdm("TODO");
-        return self;
-        
-        var _gridWidth  = __width;
-        var _gridHeight = __height;
-        var _buffer     = __buffer;
-        
-        var _right  = _left + _width-1;
-        var _bottom = _top + _height-1;
-        
-        if ((_left < _gridWidth) && (_top < _gridHeight) && (_right >= 0) && (_bottom >= 0))
+        static _funcAdd = function(_buffer, _gridWidth, _left, _top, _width, _height, _value)
         {
-            _right  = clamp(_left + _width-1, 0, _gridWidth-1);
-            _bottom = clamp(_top + _height-1, 0, _gridHeight-1);
-            _left   = clamp(_left, 0, _gridWidth);
-            _top    = clamp(_top,  0, _gridHeight);
-            
-            var _regionWidth = 1 + _right - _left;
             var _y = _top;
-            repeat(1 + _bottom - _top)
+            repeat(_height)
             {
                 var _index = __BUFFERGRID_U32_SIZE*(_left + _gridWidth*_y);
-                repeat(_regionWidth)
+                repeat(_width)
                 {
                     buffer_poke(_buffer, _index, buffer_u32, buffer_peek(_buffer, _index, buffer_u32) + _value);
                     _index += __BUFFERGRID_U32_SIZE;
                 }
                 
                 ++_y;
+            }
+        }
+        
+        var _dstBuffer = __buffer;
+        var _dstWidth  = __width;
+        var _dstHeight = __height;
+        
+        _left = __BufferGridWrap(_left, _dstWidth);
+        _top  = __BufferGridWrap(_top,  _dstHeight);
+        var _regionWidth  = min(_dstWidth,  _width);
+        var _regionHeight = min(_dstHeight, _height);
+        
+        if (_left + _regionWidth > _dstWidth)
+        {
+            if (_top + _regionHeight > _dstHeight)
+            {
+                //Wrap X + Y
+                
+                var _firstWidth  = _dstWidth  - _left;
+                var _firstHeight = _dstHeight - _top;
+                var _remainderX  = _regionWidth  - _firstWidth;
+                var _remainderY  = _regionHeight - _firstHeight;
+                
+                _funcAdd(_dstBuffer, _dstWidth, _left, _top, _firstWidth, _firstHeight, _value);
+                _funcAdd(_dstBuffer, _dstWidth,     0, _top, _remainderX, _firstHeight, _value);
+                _funcAdd(_dstBuffer, _dstWidth, _left,    0, _firstWidth, _remainderY,  _value);
+                _funcAdd(_dstBuffer, _dstWidth,     0,    0, _remainderX, _remainderY,  _value);
+            }
+            else
+            {
+                //Wrap X
+                
+                var _firstWidth = _dstWidth  - _left;
+                var _remainderX = _regionWidth  - _firstWidth;
+                
+                _funcAdd(_dstBuffer, _dstWidth, _left, _top, _firstWidth, _regionHeight, _value);
+                _funcAdd(_dstBuffer, _dstWidth,     0, _top, _remainderX, _regionHeight, _value);
+            }
+        }
+        else
+        {
+            if (_top + _regionHeight > _dstHeight)
+            {
+                //Wrap Y
+                var _firstHeight = _dstHeight - _top;
+                var _remainderY  = _regionHeight - _firstHeight;
+                
+                _funcAdd(_dstBuffer, _dstWidth, _left, _top, _regionWidth, _firstHeight, _value);
+                _funcAdd(_dstBuffer, _dstWidth, _left,    0, _regionWidth, _remainderY,  _value);
+            }
+            else
+            {
+                //No wrapping
+                _funcAdd(_dstBuffer, _dstWidth, _left, _top, _regionWidth, _regionHeight, _value);
             }
         }
         
