@@ -1,9 +1,32 @@
+/// GetLooping()
+/// Fill()
+/// Set()
+/// Get()
+/// GetInterpolated()
+/// Add()
+/// SetRegion()
+/// AddRegion()
+/// Randomize()
+/// Duplicate()
+/// ConvertToNonLooping()
+/// CopyTo()
+/// CopyPartToBuffer()
+/// CopyBufferToPart()
+/// CopyPartTo()
+/// Resize()
+/// Shift()
+/// Serialize()
+/// GetBuffer()
+/// GetWidth()
+/// GetHeight()
+/// Destroy()
+/// 
 /// @param width
 /// @param height
 
 function BufferGridFloat32(_width, _height) constructor
 {
-    static _datatypeSize = __BUFFERGRID_U32_SIZE;
+    static _datatypeSize = __BUFFERGRID_F32_SIZE;
     
     __width  = clamp(_width,  0, 0xFFFF_FFFF);
     __height = clamp(_height, 0, 0xFFFF_FFFF);
@@ -166,6 +189,18 @@ function BufferGridFloat32(_width, _height) constructor
         return _new;
     }
     
+    static CopyTo = function(_dstBufferGrid)
+    {
+        if (__size != _dstBufferGrid.__size)
+        {
+            __BufferGridError("Buffer size mismatch");
+            return;
+        }
+        
+        buffer_copy(__buffer, 0, __size, _dstBufferGrid.__buffer, 0);
+        return self;
+    }
+    
     static CopyPartToBuffer = function(_srcLeft, _srcTop, _copyWidth, _copyHeight, _dstBuffer)
     {
         var _srcWidth  = __width;
@@ -194,9 +229,43 @@ function BufferGridFloat32(_width, _height) constructor
         
         if ((_copyWidth > 0) && (_copyHeight > 0))
         {
-            buffer_copy_stride(__buffer, __BUFFERGRID_U32_SIZE*(_srcLeft + _srcWidth*_srcTop), __BUFFERGRID_U32_SIZE*_copyWidth, __BUFFERGRID_U32_SIZE*_srcWidth, _copyHeight,
-                               _dstBuffer, 0, __BUFFERGRID_U32_SIZE*_copyWidth);
+            buffer_copy_stride(__buffer, __BUFFERGRID_F32_SIZE*(_srcLeft + _srcWidth*_srcTop), __BUFFERGRID_F32_SIZE*_copyWidth, __BUFFERGRID_F32_SIZE*_srcWidth, _copyHeight,
+                               _dstBuffer, 0, __BUFFERGRID_F32_SIZE*_copyWidth);
         }
+        
+        return self;
+    }
+    
+    static CopyBufferToPart = function(_srcBuffer, _srcOffset, _dstLeft, _dstTop, _copyWidth, _copyHeight)
+    {
+        var _dstWidth  = __width;
+        var _dstHeight = __height;
+        
+        if ((_dstLeft >= _dstWidth) || (_dstTop >= _dstHeight))
+        {
+            return;
+        }
+        
+        var _dstRight  = _dstLeft + _copyWidth-1;
+        var _dstBottom = _dstTop + _copyHeight-1;
+        
+        if ((_dstRight < 0) || (_dstBottom < 0))
+        {
+            return;
+        }
+        
+        var _inCopyWidth = _copyWidth;
+        
+        _dstLeft   = clamp(_dstLeft,   0, _dstWidth-1);
+        _dstTop    = clamp(_dstTop,    0, _dstHeight-1);
+        _dstRight  = clamp(_dstRight,  0, _dstWidth-1);
+        _dstBottom = clamp(_dstBottom, 0, _dstHeight-1);
+        
+        _copyWidth  = 1 + _dstRight - _dstLeft;
+        _copyHeight = 1 + _dstBottom - _dstTop;
+        
+        buffer_copy_stride(_srcBuffer, _srcOffset, __BUFFERGRID_F32_SIZE*_copyWidth, __BUFFERGRID_F32_SIZE*_inCopyWidth, _copyHeight,
+                           __buffer, 0, __BUFFERGRID_F32_SIZE*_copyWidth);
         
         return self;
     }

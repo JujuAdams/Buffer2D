@@ -1,3 +1,26 @@
+/// GetLooping()
+/// Fill()
+/// Set()
+/// Get()
+/// GetInterpolated()
+/// Add()
+/// SetRegion()
+/// AddRegion()
+/// Randomize()
+/// Duplicate()
+/// ConvertToNonLooping()
+/// CopyTo()
+/// CopyPartToBuffer()
+/// CopyBufferToPart()
+/// CopyPartTo()
+/// Resize()
+/// Shift()
+/// Serialize()
+/// GetBuffer()
+/// GetWidth()
+/// GetHeight()
+/// Destroy()
+/// 
 /// @param width
 /// @param height
 
@@ -164,6 +187,18 @@ function BufferGridUint32(_width, _height) constructor
         buffer_copy(__buffer, 0, __size, _new.__buffer, 0);
         Destroy();
         return _new;
+    }
+    
+    static CopyTo = function(_dstBufferGrid)
+    {
+        if (__size != _dstBufferGrid.__size)
+        {
+            __BufferGridError("Buffer size mismatch");
+            return;
+        }
+        
+        buffer_copy(__buffer, 0, __size, _dstBufferGrid.__buffer, 0);
+        return self;
     }
     
     static CopyPartToBuffer = function(_srcLeft, _srcTop, _copyWidth, _copyHeight, _dstBuffer)

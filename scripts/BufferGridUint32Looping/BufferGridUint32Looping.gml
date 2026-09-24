@@ -1,3 +1,26 @@
+/// GetLooping()
+/// Fill()
+/// Set()
+/// Get()
+/// GetInterpolated()
+/// Add()
+/// SetRegion()
+/// AddRegion()
+/// Randomize()
+/// Duplicate()
+/// ConvertToNonLooping()
+/// CopyTo()
+/// CopyPartToBuffer()
+/// CopyBufferToPart()
+/// CopyPartTo()
+/// Resize()
+/// Shift()
+/// Serialize()
+/// GetBuffer()
+/// GetWidth()
+/// GetHeight()
+/// Destroy()
+/// 
 /// @param width
 /// @param height
 
