@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"__BufferGridWrap",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"__BufferGridWrap",
+  "parent":{
+    "name":"BufferGrid",
+    "path":"folders/BufferGrid.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

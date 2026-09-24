@@ -23,8 +23,13 @@
   "resources":[
     {"id":{"name":"oTest","path":"objects/oTest/oTest.yy",},},
     {"id":{"name":"rMain","path":"rooms/rMain/rMain.yy",},},
+    {"id":{"name":"__BufferGridWrap","path":"scripts/__BufferGridWrap/__BufferGridWrap.yy",},},
+    {"id":{"name":"BufferGridCreate","path":"scripts/BufferGridCreate/BufferGridCreate.yy",},},
     {"id":{"name":"BufferGridDeserialize","path":"scripts/BufferGridDeserialize/BufferGridDeserialize.yy",},},
     {"id":{"name":"BufferGridFloat32","path":"scripts/BufferGridFloat32/BufferGridFloat32.yy",},},
+    {"id":{"name":"BufferGridFloat32Looping","path":"scripts/BufferGridFloat32Looping/BufferGridFloat32Looping.yy",},},
+    {"id":{"name":"BufferGridUint32","path":"scripts/BufferGridUint32/BufferGridUint32.yy",},},
+    {"id":{"name":"BufferGridUint32Looping","path":"scripts/BufferGridUint32Looping/BufferGridUint32Looping.yy",},},
   ],
   "resourceType":"GMProject",
   "resourceVersion":"2.0",
