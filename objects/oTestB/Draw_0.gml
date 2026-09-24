@@ -18,8 +18,8 @@ var _funcDebug = function(_x, _y, _bufferGrid)
     }
 }
 
-_funcDebug( 10, 10, bufferA);
-_funcDebug(210, 10, bufferB);
-_funcDebug(410, 10, bufferC);
+_funcDebug( 10, 10, bufferGridA);
+_funcDebug(210, 10, bufferGridB);
+//_funcDebug(410, 10, bufferC);
 
 draw_set_color(c_white);
