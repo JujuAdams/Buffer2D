@@ -1,2 +1,3 @@
-# Buffer2D
-Using buffers as 2D grids in GameMaker
+<h1 align="center">BufferGrid</h1>
+
+<p align="center">2D buffers for GameMaker 2026 LTS</p>
