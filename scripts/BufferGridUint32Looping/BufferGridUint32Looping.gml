@@ -60,15 +60,15 @@ function BufferGridUint32Looping(_width, _height) constructor
     {
         var _gridWidth = __width;
         
-        var _x0 = __BufferGridWrap(_x,   _gridWidth);
-        var _y0 = __BufferGridWrap(_y,   __height);
-        var _x1 = __BufferGridWrap(_x+1, _gridWidth);
-        var _y1 = __BufferGridWrap(_y+1, __height);
-        
         var _xFrac = frac(_x);
         var _yFrac = frac(_y);
         _x = floor(_x);
         _y = floor(_y);
+        
+        var _x0 = __BufferGridWrap(_x,   _gridWidth);
+        var _y0 = __BufferGridWrap(_y,   __height);
+        var _x1 = __BufferGridWrap(_x+1, _gridWidth);
+        var _y1 = __BufferGridWrap(_y+1, __height);
         
         var _buffer = __buffer;
         var _value00 = buffer_peek(_buffer, __BUFFERGRID_U32_SIZE*(_x0 + _gridWidth*_y0), buffer_u32);
@@ -425,7 +425,7 @@ function BufferGridUint32Looping(_width, _height) constructor
         //Copy to an intermediate buffer because dealing with two looping buffers is too much for my brain
         var _workBuffer = buffer_create(__BUFFERGRID_U32_SIZE*_copyWidth*_copyHeight, buffer_fixed, __BUFFERGRID_U32_SIZE);
         
-        CopyPartToBuffer(_srcLeft, _srcTop, _copyWidth, _copyHeight, _workBuffer);
+        CopyPartToBuffer(_srcLeft, _srcTop, _copyWidth, _copyHeight, _workBuffer, 0);
         _dstBufferGrid.CopyBufferToPart(_workBuffer, 0, _dstLeft, _dstTop, _copyWidth, _copyHeight);
         
         buffer_delete(_workBuffer);
